@@ -3,9 +3,19 @@
 class graphiteapi::install {
   include graphiteapi::params
 
-  # EPEL is needed for the packages.
-  Package {
-    require => Class['epel'],
+  case $::operatingsystem {
+    'RedHat', 'CentOS': { 
+      # EPEL is needed for the packages.
+      Package {
+        require => Class['epel'],
+      }
+
+      # Install some Graphite API dependencies.
+      package { ['cairo-devel', 'libffi-devel', 'libyaml-devel', 'libtool']: } ->
+    }
+    /^(Debian|Ubuntu)$/:{ 
+      package { ['libcairo2-dev', 'libffi-dev', 'libyaml-dev', 'libtool']: } ->
+    }
   }
 
   # @TODO: Decouple this a bit if possible.
@@ -16,9 +26,6 @@ class graphiteapi::install {
       virtualenv => true,
     }
   }
-
-  # Install some Graphite API dependencies.
-  package { ['cairo-devel', 'libffi-devel', 'libyaml-devel', 'libtool']: } ->
 
   # Install graphite-api in a virtualenv.
   python::virtualenv { $graphiteapi::virtualenv_path:

@@ -18,6 +18,16 @@ class graphiteapi::params (
       $graphiteapi_log_path = '/var/log/gunicorn-graphite-api.log'
       $create_search_index = true
     }
+    'Ubuntu': {
+      $graphiteapi_user  = 'nobody'
+      $graphiteapi_group = 'nobody'
+      $virtualenv_path = '/opt/graphite-api'
+      $whisper_paths = ['/var/lib/carbon/whisper']
+      $graphiteapi_tz = 'America/New_York'
+      $graphiteapi_search_index = '/var/www/graphiteapi_index'
+      $graphiteapi_log_path = '/var/log/gunicorn-graphite-api.log'
+      $create_search_index = true    
+    }
     default: {
       fail("${::operatingsystem} not supported")
     }
